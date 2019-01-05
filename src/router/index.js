@@ -49,13 +49,13 @@ export default new Router({
                     // markdown组件
                     path: '/markdown',
                     component: resolve => require(['../components/page/Markdown.vue'], resolve),
-                    meta: { title: 'markdown编辑器' }    
+                    meta: { title: 'markdown编辑器' }
                 },
                 {
                     // 图片上传组件
                     path: '/upload',
                     component: resolve => require(['../components/page/Upload.vue'], resolve),
-                    meta: { title: '文件上传' }   
+                    meta: { title: '文件上传' }
                 },
                 {
                     // vue-schart组件
@@ -90,6 +90,26 @@ export default new Router({
                     path: '/403',
                     component: resolve => require(['../components/page/403.vue'], resolve),
                     meta: { title: '403' }
+                },
+                {
+                    path: '/sysmenu',
+                    component: resolve => require(['../components/page/system/SysMenu.vue'], resolve),
+                    meta: { title: '系统菜单' }
+                },
+                {
+                    path: '/system/menu',
+                    meta: { title: '系统菜单' },
+                    component: resolve => require(['../components/page/system/SysMenu.vue'], resolve),
+                },
+                {
+                    path: '/spider/website',
+                    meta: { title: '网站管理' },
+                    component: resolve => require(['../components/page/spider/website/index.vue'], resolve),
+                },
+                {
+                    path: '/spider/collection/rule',
+                    meta: { title: '采集规则' },
+                    component: resolve => require(['../components/page/spider/collectionRule/index.vue'], resolve),
                 }
             ]
         },

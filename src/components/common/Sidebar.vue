@@ -1,6 +1,6 @@
 <template>
     <div class="sidebar">
-        <el-menu class="sidebar-el-menu" :default-active="onRoutes" :collapse="collapse" background-color="#324157"
+         <el-menu class="sidebar-el-menu" :default-active="onRoutes" :collapse="collapse" background-color="#324157"
             text-color="#bfcbd9" active-text-color="#20a0ff" unique-opened router>
             <template v-for="item in items">
                 <template v-if="item.subs">
@@ -28,15 +28,46 @@
                 </template>
             </template>
         </el-menu>
+
+        <el-menu class="sidebar-el-menu" :default-active="onRoutes" :collapse="collapse" background-color="#324157"
+                 text-color="#bfcbd9" active-text-color="#20a0ff" unique-opened router>
+            <template v-for="item in menuItems">
+                <template v-if="item.children">
+                    <el-submenu :index="item.path" :key="item.path">
+                        <template slot="title">
+                            <i :class="item.icon"></i><span slot="title">{{ item.name }}</span>
+                        </template>
+                        <template v-for="subItem in item.children">
+                            <el-submenu v-if="subItem.children" :index="subItem.path" :key="subItem.path">
+                                <template slot="title">{{ subItem.name }}</template>
+                                <el-menu-item v-for="(threeItem,i) in subItem.children" :key="i" :index="threeItem.path">
+                                    {{ threeItem.name }}
+                                </el-menu-item>
+                            </el-submenu>
+                            <el-menu-item v-else :index="subItem.path" :key="subItem.path">
+                                {{ subItem.name }}
+                            </el-menu-item>
+                        </template>
+                    </el-submenu>
+                </template>
+                <template v-else>
+                    <el-menu-item :index="item.path" :key="item.path">
+                        <i :class="item.icon"></i><span slot="title">{{ item.name }}</span>
+                    </el-menu-item>
+                </template>
+            </template>
+        </el-menu>
     </div>
 </template>
 
 <script>
     import bus from '../common/bus';
+    import {getMenuTree } from '../../request/system/menu/index';
     export default {
         data() {
             return {
                 collapse: false,
+                menuItems: [],
                 items: [
                     {
                         icon: 'el-icon-lx-home',
@@ -121,7 +152,23 @@
                                 title: '404页面'
                             }
                         ]
-                    }
+                    },
+                    {
+                        icon: 'el-icon-lx-settings',
+                        index: '8',
+                        title: '系统管理',
+                        subs: [
+                            {
+                                index: 'drag',
+                                title: '拖拽列表',
+                            },
+                            {
+                                icon: 'el-icon-lx-home',
+                                index: 'sysmenu',
+                                title: '系统菜单'
+                            },
+                        ]
+                    },
                 ]
             }
         },
@@ -135,6 +182,12 @@
             bus.$on('collapse', msg => {
                 this.collapse = msg;
             })
+
+            // 查询菜单
+            getMenuTree().then(response => {
+                const data = response.data;
+                this.menuItems = data.result;
+            });
         }
     }
 </script>
